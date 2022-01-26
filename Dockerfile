@@ -15,4 +15,7 @@ RUN mkdir -p /var/log/nginx \
   && ln -sf /dev/stderr /var/log/nginx/error.log
 
 ENTRYPOINT [ "nginx" ]
+
+STOPSIGNAL SIGQUIT
+
 CMD ["-g", "daemon off;"]

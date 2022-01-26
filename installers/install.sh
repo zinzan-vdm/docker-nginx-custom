@@ -98,15 +98,27 @@ $INSTALLERS_DIR/.install.nginx.sh "$DIR_NGINX" \
 # Inject NGINX default config (/etc/nginx/nginx.conf).
 log "Setting up NGINX config (/etc/nginx/nginx.conf)"
 cat <<EOF > /etc/nginx/nginx.conf
+error_log /var/log/nginx/error.log notice;
+
+worker_processes 12;
+worker_rlimit_nofile 4437;
+worker_shutdown_timeout 240s;
+
 events {
-  worker_connections 999999;
+  worker_connections 16384;
 }
 
 stream {
+  log_format log_stream '[$remote_addr] [$time_iso8601] $protocol $status $bytes_sent $bytes_received $session_time';
+  access_log /var/log/nginx/access.log log_stream;
+
   include '$DIR_CONF_STREAM/*.conf';
 }
 
 http {
+  log_format upstream_info '[$remote_addr] [$time_iso8601] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" $request_length $request_time $upstream_addr $upstream_response_length $upstream_response_time $upstream_status';
+  access_log /var/log/nginx/access.log upstream_info;
+
   include '$DIR_CONF_HTTP/*.conf';
 }
 EOF
