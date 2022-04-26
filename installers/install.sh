@@ -56,7 +56,7 @@ DIR_INSTALLATION=$(dir /nginx/.installation)
 # Configure prerequisites and NGINX release URLs
 DL_NGINX="https://nginx.org/download/nginx-1.18.0.tar.gz"
 DL_PCRE="https://github.com/zinzan-vdm/pcre-8.44/releases/download/pcre-8.44/pcre-8.44.tar.gz"
-DL_ZLIB="http://zlib.net/zlib-1.2.11.tar.gz"
+DL_ZLIB="http://zlib.net/zlib-1.2.12.tar.gz"
 DL_OPENSSL="http://www.openssl.org/source/openssl-1.1.1g.tar.gz"
 
 # Download and decompress NGINX
@@ -79,7 +79,7 @@ decompress "$TAR_OPENSSL" "$DIR_INSTALLATION"
 ls -al "$DIR_INSTALLATION"
 DIR_NGINX="$DIR_INSTALLATION/nginx-1.18.0"
 DIR_PCRE="$DIR_INSTALLATION/pcre-8.44"
-DIR_ZLIB="$DIR_INSTALLATION/zlib-1.2.11"
+DIR_ZLIB="$DIR_INSTALLATION/zlib-1.2.12"
 DIR_OPENSSL="$DIR_INSTALLATION/openssl-1.1.1g"
 
 # Install prerequisites
@@ -116,6 +116,8 @@ stream {
 }
 
 http {
+  server_tokens off;
+
   log_format upstream_info '[\$remote_addr] [\$time_iso8601] "\$http_host" "\$request" \$status \$body_bytes_sent "\$http_referer" "\$http_user_agent" \$request_length \$request_time \$upstream_addr \$upstream_response_length \$upstream_response_time \$upstream_status';
   access_log /var/log/nginx/access.log upstream_info;
 
