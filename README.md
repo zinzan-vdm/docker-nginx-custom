@@ -52,3 +52,34 @@ See the installation files available in the /installers directory.
 --with-stream_ssl_preread_module
 --with-debug
 ```
+
+## Self-signed Certificates
+This image has its own self-signed certificates generated at `/internal/certs/self-signed/`.
+
+* Private Key: `/internal/certs/self-signed/key`
+* Certificate: `/internal/certs/self-signed/crt`
+
+## Recommendations
+
+* Add some default server (catch-all) rules for your HTTP config.
+```
+log_format default_server_request '[$remote_addr] [$time_iso8601] "default_server" $status $body_bytes_sent';
+server {
+  listen 80 default_server;
+  
+  access_log /var/log/nginx/access.log default_server_request;
+
+  return 404;
+}
+server {
+  listen 443 default_server ssl;
+
+  # Self signed certificates. Keep in mind that these certificates are in public domain at.
+  ssl_certificate /internal/certs/self-signed/crt;
+  ssl_certificate_key /internal/certs/self-signed/key;
+
+  access_log /var/log/nginx/access.log default_server_request;
+
+  return 404;
+}
+```
